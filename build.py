@@ -1,14 +1,24 @@
-from conan.packager import ConanMultiPackager
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+import platform
+from cpt.packager import ConanMultiPackager
 
 
 if __name__ == "__main__":
-    builder = ConanMultiPackager(use_docker=True)
-    builder.add(settings={
-        'os': 'Linux',
-        'compiler.version': '5',
-        'compiler.libcxx': 'libstdc++11',
-        'arch': 'x86_64',
-        'build_type': 'Release',
-        'compiler': 'gcc'
-    })
+    builder = ConanMultiPackager()
+    if platform.system() == "Windows":
+        builder.add(settings={"compiler":"Visual Studio", "compiler.version": "15",
+                              "arch": "x86", "build_type": "Release"},
+                    options={}, env_vars={}, build_requires={})
+    elif platform.system() == "Linux":
+        builder.add(settings={"compiler":"gcc", "compiler.version": "8",
+                              "arch": "x86_64", "build_type": "Release"},
+                    options={}, env_vars={}, build_requires={})
+    elif platform.system() == "Darwin":
+        builder.add(settings={"compiler":"apple-clang", "compiler.version": "10.0",
+                              "arch": "x86_64", "build_type": "Release"},
+                    options={}, env_vars={}, build_requires={})
+    else:
+        builder.add(settings={}, options={}, env_vars={}, build_requires={})
     builder.run()
