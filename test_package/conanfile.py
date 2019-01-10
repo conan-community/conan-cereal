@@ -7,7 +7,6 @@ from conans import ConanFile, CMake
 class CerealTestConan(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
     generators = "cmake"
-    default_options = {"cereal:thread_safe": True}
 
     def build(self):
         cmake = CMake(self)

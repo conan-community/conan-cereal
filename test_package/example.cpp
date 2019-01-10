@@ -1,54 +1,27 @@
-#include <fstream>
+#include <cstdlib>
 #include <iostream>
-#include "cereal/types/unordered_map.hpp"
-#include "cereal/types/memory.hpp"
-#include "cereal/archives/binary.hpp"
 
-struct MyRecord
+#include <cereal/archives/binary.hpp>
+
+
+struct Data
 {
-  uint8_t x, y;
-  float z;
-
-  template <class Archive>
-  void serialize( Archive & ar )
-  {
-    ar( x, y, z );
-  }
+    int x, y, z;
+    template<class Archive>
+    void serialize(Archive & archive) { archive( x, y, z ); }
 };
 
-struct SomeData
-{
-  int32_t id;
-  std::shared_ptr<std::unordered_map<uint32_t, MyRecord>> data;
 
-  template <class Archive>
-  void save( Archive & ar ) const
-  {
-    ar( data );
-  }
+int main() {
+    std::cout << "Serialized data: ";
+    {
+        cereal::BinaryOutputArchive oarchive(std::cout);
+        Data d1{42, 12, 52};
+        Data d2{33, 34, 35};
+        Data d3{74, 34, 45};
+        oarchive(d1, d2, d3);
+    }
+    std::cout << std::endl;
 
-  template <class Archive>
-  void load( Archive & ar )
-  {
-    static int32_t idGen = 0;
-    id = idGen++;
-    ar( data );
-  }
-};
-
-int main()
-{
-  std::ofstream os("out.cereal", std::ios::binary);
-  cereal::BinaryOutputArchive archive( os );
-
-  SomeData myData;
-  archive( myData );
-
-#if CEREAL_THREAD_SAFE
-    std::cout << "Cereal Thread safe is enabled" << std::endl;
-#else
-    throw std::runtime_error("Cereal Thread safe is disabled but should be enabled");
-#endif
-
-  return 0;
+    return EXIT_SUCCESS;
 }

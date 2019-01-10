@@ -39,3 +39,5 @@ class CerealConan(ConanFile):
     def package_info(self):
         if self.options.thread_safe:
             self.cpp_info.defines = ["CEREAL_THREAD_SAFE=1"]
+            if tools.os_info.is_linux:
+                self.cpp_info.libs.append("pthread")
