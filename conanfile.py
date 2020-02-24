@@ -21,6 +21,9 @@ class CerealConan(ConanFile):
     no_copy_source = True
     _source_subfolder = "source_subfolder"
 
+    def configure(self):
+        self.output.warn("[DEPRECATED] Package cereal/1.2.2@conan/stable is being deprecated. Change yours to require cereal/1.2.2 instead")
+
     def source(self):
         source_url = ("%s/archive/v%s.zip" % (self.homepage, self.version))
         tools.get(source_url)
